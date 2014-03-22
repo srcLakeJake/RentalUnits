@@ -1,4 +1,8 @@
+drop schema if exists rnt;
+
 create schema if not exists rnt;
+
+use rnt;
 
 create table if not exists user_basics (
 username varchar(20),
