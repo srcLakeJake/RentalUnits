@@ -7,12 +7,12 @@ sub startup {
 
   # Plugins
 
-  $self->routes()->get('/user')->to(
-    controller => 'RentalUnits::App::User',
+  $self->routes()->get('/user')->to(    
+    controller => 'User',
     action     => 'get_user',
   );
 
   return;
-}
+}	
 
 1;

@@ -7,7 +7,7 @@ sub get_user {
 
   my $test = 'srcLakeJake';
 
-  $self->render_jsonp( { user => $test, } );
+  $self->render( json => { user => $test, } );
 
   return;
 }
