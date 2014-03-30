@@ -1,7 +1,6 @@
 package RentalUnits::DB;
 
-use Rose::DB;
-our @ISA = qw{Rose::DB};
+use parent 'Rose::DB';
 
 __PACKAGE__->use_private_registry();
 

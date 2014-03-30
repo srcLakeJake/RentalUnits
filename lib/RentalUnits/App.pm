@@ -2,14 +2,14 @@ package RentalUnits::App;
 
 use Mojo::Base 'Mojolicious';
 
+#use RentalUnits::DB;
+
 sub startup {
-  my $self = shift;
+  my $self = shift;  
 
-  # Plugins
-
-  $self->routes()->get('/user')->to(    
+  $self->routes()->get('/all_users')->to(   
     controller => 'User',
-    action     => 'get_user',
+    action     => 'get_all_users',
   );
 
   return;
