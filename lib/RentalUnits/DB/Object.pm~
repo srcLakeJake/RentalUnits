@@ -1,0 +1,7 @@
+package RentalUnits::DB::Object;
+
+use parent 'Rose::DB::Object';
+
+sub init_db { RentalUnits::DB->new(); }
+
+1;

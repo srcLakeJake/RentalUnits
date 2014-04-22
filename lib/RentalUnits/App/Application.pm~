@@ -31,20 +31,18 @@ sub post_application {
 
   my $match = Mojolicious::Routes::Match->new(root => $r);
   
-  $match->match($self => {method => 'POST', path => '/application'});
+  #$match->match($self => {method => 'POST', path => '/application'});
 
-  
+  $match->current();
+
+  my $param_ref = $match->stack->[0];
+  for my $key ( keys %{ $param_ref } ) {
+    print "$key = " . $param_ref->{$key} . "\n";
+  }
 
   $self->render( json => { params => $param_ref, } );
 
   return;
 }
-
-# my $current = $match->current();
-
-  # my $param_ref = $current->stack->[0]; #$match->stack->[0];
-  # for my $key ( keys %{ $param_ref } ) {
-    # print "$key = " . $param_ref->{$key} . "\n";
-  # }
 
 1;

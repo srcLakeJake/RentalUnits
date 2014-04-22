@@ -25,7 +25,6 @@ __PACKAGE__->meta()->setup(
   #auto   => 1,
 );
 
-# generate RentalUnits::DB::UserBasics::Manager object
 __PACKAGE__->meta()->make_manager_class('user_basics');
 
 1;

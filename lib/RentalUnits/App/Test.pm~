@@ -1,0 +1,23 @@
+package RentalUnits::App::Test;
+
+use Mojolicious::Controller;
+use Mojolicious::Routes;
+use Mojolicious::Routes::Match;
+
+# Routes
+my $r = Mojolicious::Routes->new;
+$r->get('/:controller/:action');
+$r->put('/:controller/:action');
+
+# Match
+my $c = Mojolicious::Controller->new;
+my $match = Mojolicious::Routes::Match->new(root => $r);
+$match->match($c => {method => 'PUT', path => '/foo/bar'});
+say $match->stack->[0]{controller};
+say $match->stack->[0]{action};
+
+# Render
+say $match->path_for;
+say $match->path_for(action => 'baz');
+
+1;

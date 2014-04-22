@@ -1,0 +1,10 @@
+package RentalUnits::DB::User;
+
+use strict;
+use warnings;
+
+use parent 'Rose::DB::Object';
+
+
+
+1;

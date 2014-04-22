@@ -7,7 +7,7 @@ use Mojo::Base 'Mojolicious';
 sub startup {
   my $self = shift;  
 
-  $self->secret('My_h0v3rCr@fT_1$_Fuil_oF_e3l$#');
+  $self->secret(['My_h0v3rCr@fT_1$_Fuil_oF_e3l$#']);
 
   $self->routes()->get('/all_users')->to(   
     controller => 'User',
