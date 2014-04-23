@@ -24,7 +24,27 @@ sub startup {
     controller => 'Application',
     action     => 'post_application',
     validation_class => 'RentalUnits::Validation::Application',
-
+  );
+  
+  my $auth = $self->routes()->bridge('/auth')->to(cb => sub {
+      my $self = shift;
+	  
+	  print "Got here";
+	  
+	  #Failed authentication
+	  $self->render( json => {auth => 'failed. name not provided' } );
+	  return if not $self->param('name');
+	  
+	  # Successful authentication
+	  return 1 if $self->param('name') eq 'Jake';
+	  
+	  # Failed authentication
+	  $self->render( json => {auth => 'failed. name not Jake' } );
+	  return undef;
+  });
+  $auth->route('/secured_stuff')->to(
+      controller => 'Stuff',
+	  action      => 'show_stuff',
   );
 
   return;

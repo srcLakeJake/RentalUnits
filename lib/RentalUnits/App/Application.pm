@@ -2,7 +2,6 @@ package RentalUnits::App::Application;
 
 use Mojo::Base 'Mojolicious::Controller';
 
-use RentalUnits::App;
 use RentalUnits::DB::Application;
 
 sub get_application {
