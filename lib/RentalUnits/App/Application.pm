@@ -2,6 +2,7 @@ package RentalUnits::App::Application;
 
 use Mojo::Base 'Mojolicious::Controller';
 
+use RentalUnits::App;
 use RentalUnits::DB::Application;
 
 sub get_application {
@@ -22,29 +23,22 @@ sub get_application {
   return;
 }
 
-# want to see if I can get POST parameters out, and figure out how to 
-# use 'match' appropriately in controller class
+# POST parameters accessed through $self->param
+# stack contains the hash elements passed to the route in App.pm
 sub post_application {
-  my $self = shift;
-
-  my $r = Mojolicious::Routes->new;
-
-  my $match = Mojolicious::Routes::Match->new(root => $r);
+  my $self = shift;  
   
-  $match->match($self => {method => 'POST', path => '/application'});
+  my @params = $self->param();
+  my @stack = @{ $self->match()->stack() };
 
-  
-
-  $self->render( json => { params => $param_ref, } );
+  $self->render( json => { 
+      foo => $self->param('foo'),
+	  bar => $self->param('bar'),
+	  xyz => $self->param('xyz'),	  
+	  stack => @stack,
+  } );
 
   return;
 }
-
-# my $current = $match->current();
-
-  # my $param_ref = $current->stack->[0]; #$match->stack->[0];
-  # for my $key ( keys %{ $param_ref } ) {
-    # print "$key = " . $param_ref->{$key} . "\n";
-  # }
 
 1;
