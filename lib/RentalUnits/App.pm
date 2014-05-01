@@ -13,44 +13,9 @@ sub startup {
   $self->plugin( 'authentication' => {
       #'autoload_user' => 1,
 	  'session_key' => 'turds',
-	  'load_user' => sub {
-          my ( $app, $uid ) = @_;	
-	      my %users = (
-	          jake => {
-		          group => 'admins',
-			      name  => 'Jake Mabee',
-		      },
-		      maki => {
-		          group => 'basic',
-			      name  => 'Maki Tanigaki',
-		      },
-	      );
-		  my $user;
-	      if ( exists $users{$uid} ) {
-	          $user = \$users{$uid};
-	      }	
-	      return $user;
-      },
-	  'validate_user' => sub {
-          my ( $app, $username, $pwd, $extradata ) = @_;		
-	      my %creds = (
-	          jake => 'canoes05',
-		      maki => 'minipanda',
-	      );	
-	      if ( exists $creds{$username} ) {
-	          if ( $creds{$username} eq $pwd ) {
-		          return $username;
-		  }
-		  else {
-		      return undef;
-		  }
-	  }
-	  else {
-	      return undef;
-	  }	
-	  return undef;
-    },
-	#'current_user_fn' => 'user',
+	  'load_user' => $self->authorize_user(),
+	  'validate_user' => $self->authenticate_user(),	  
+	  #'current_user_fn' => 'user',
   });
 
   $self->routes()->get('/all_users')->to(   
@@ -99,70 +64,47 @@ sub startup {
   return;
 }	
 
-sub log_in {
-    my $self = shift;
-	
-	my $username = $self->param('username');
-	my $password = $self->param('password');	
-  
-  my $auth_msg;
-  if ( $self->authenticate( $username, $password, ) ) {
-      $auth_msg = "Login succeeded!\n";
-  }
-  else {
-      $auth_msg = "Login failed.\n";
-  }
-
-  $self->render( json => { 
-      auth_message => $auth_msg,
-  } );
-  
-  return;
+sub authenticate_user {
+    return sub {
+          my ( $app, $username, $pwd, $extradata ) = @_;		
+	      my %creds = (
+	          jake => 'abc123',
+		      maki => 'xyz789',
+	      );	
+	      if ( exists $creds{$username} ) {
+	          if ( $creds{$username} eq $pwd ) {
+		          return $username;
+		  }
+		  else {
+		      return undef;
+		  }
+	  }
+	  else {
+	      return undef;
+	  }	
+	  return undef;
+    };
 }
 
-sub load_user {
-    my ( $app, $uid ) = @_;
-	
-	my %users = (
-	    jake => {
-		    group => 'admins',
-			name  => 'Jake Mabee',
-		},
-		maki => {
-		    group => 'basic',
-			name  => 'Maki Tanigaki',
-		},
-	);
-	
-	my $user;
-	if ( exists $users{$uid} ) {
-	    $user = \$users{$uid};
-	}
-	
-	return $user;
+sub authorize_user {
+    return sub {
+	    my ( $app, $uid ) = @_;	
+	      my %users = (
+	          jake => {
+		          group => 'admins',
+			      name  => 'Jake Gittes',
+		      },
+		      maki => {
+		          group => 'basic',
+			      name  => 'Maki T',
+		      },
+	      );
+		  my $user;
+	      if ( exists $users{$uid} ) {
+	          $user = \$users{$uid};
+	      }	
+	      return $user;
+	};
 }
-
-sub validate_user {
-    my ( $app, $username, $pwd, $extradata ) = @_;	
-	
-	my %creds = (
-	    jake => 'canoes05',
-		maki => 'minipanda',
-	);
-	
-	if ( exists $creds{$username} ) {
-	    if ( $creds{$username} eq $pwd ) {
-		    return $username;
-		}
-		else {
-		    return undef;
-		}
-	}
-	else {
-	    return undef;
-	}
-	
-	return undef;
-}	
 
 1;
