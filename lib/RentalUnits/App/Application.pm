@@ -7,8 +7,13 @@ use RentalUnits::DB::Application;
 sub get_application {
   my $self = shift;
 
-  my $id = $self->param('id');
+  if ( ! $self->is_user_authenticated() ) {      
+      $self->render( json => { message => 'You must log in to view this page.', } );
+	  return;
+  }
 
+  my $id = $self->param('id');
+  
   my $appl_obj = RentalUnits::DB::Application->new( app_id => $id );
   $appl_obj->load();
   
