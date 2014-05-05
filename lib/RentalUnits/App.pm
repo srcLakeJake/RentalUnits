@@ -2,21 +2,15 @@ package RentalUnits::App;
 
 use Mojo::Base 'Mojolicious';
 
-use Mojolicious::Plugin::Authentication;
-#use RentalUnits::DB;
+# use Mojolicious::Plugin::Authentication;
 
 sub startup {
   my $self = shift;  
 
   $self->secret('My_h0v3rCr@fT_1$_Fuil_oF_e3l$#');
   
-  $self->plugin( 'authentication' => {
-      #'autoload_user' => 1,
-	  'session_key' => 'turds',
-	  'load_user' => $self->authorize_user(),
-	  'validate_user' => $self->authenticate_user(),	  
-	  #'current_user_fn' => 'user',
-  });
+  push @{ $self->plugins()->namespaces() }, 'RentalUnits::Plugin';  
+  $self->plugin( 'StdApp', {} );  
 
   $self->routes()->get('/all_users')->to(   
     controller => 'User',
@@ -62,49 +56,6 @@ sub startup {
   );  
 
   return;
-}	
-
-sub authenticate_user {
-    return sub {
-          my ( $app, $username, $pwd, $extradata ) = @_;		
-	      my %creds = (
-	          jake => 'abc123',
-		      maki => 'xyz789',
-	      );	
-	      if ( exists $creds{$username} ) {
-	          if ( $creds{$username} eq $pwd ) {
-		          return $username;
-		  }
-		  else {
-		      return undef;
-		  }
-	  }
-	  else {
-	      return undef;
-	  }	
-	  return undef;
-    };
-}
-
-sub authorize_user {
-    return sub {
-	    my ( $app, $uid ) = @_;	
-	      my %users = (
-	          jake => {
-		          group => 'admins',
-			      name  => 'Jake Gittes',
-		      },
-		      maki => {
-		          group => 'basic',
-			      name  => 'Maki T',
-		      },
-	      );
-		  my $user;
-	      if ( exists $users{$uid} ) {
-	          $user = \$users{$uid};
-	      }	
-	      return $user;
-	};
 }
 
 1;
