@@ -2,28 +2,42 @@ package RentalUnits::App::Application;
 
 use Mojo::Base 'Mojolicious::Controller';
 
+# use Mojolicious::Validator;
+# use Mojolicious::Validator::Validation;
+# use Mojolicious::Plugin::FormValidator; # DFV based plugin
+
 use RentalUnits::DB::Application;
 
 sub get_application {
   my $self = shift;
 
-  if ( ! $self->is_user_authenticated() ) {      
+  if ( ! $self->is_user_authenticated() ) {            
       $self->render( json => { message => 'You must log in to view this page.', } );
 	  return;
   }
 
-  my $id = $self->param('id');
+  my $validation = $self->validation();
+  $validation->input({ app_id => $self->param('app_id') });
+  $validation->required('app_id')->in('1');
   
-  my $appl_obj = RentalUnits::DB::Application->new( app_id => $id );
-  $appl_obj->load();
+  # Execute branch only if validation succeeded. $validation->param('app_id') 
+  # will be empty if validation failed
+  if ( $validation->param('app_id') ) {
+      
+	  my $appl_obj = RentalUnits::DB::Application->new( app_id => $validation->param('app_id') );
+      $appl_obj->load();
   
-  my $application_ref;
-  for my $column ( $appl_obj->meta()->columns() ) {
-    $application_ref->{$column} = $appl_obj->$column();
+      my $application_ref;
+      for my $column ( $appl_obj->meta()->columns() ) {
+        $application_ref->{$column} = $appl_obj->$column();
+      }
+	  
+	  $self->render( json => { application => $application_ref, } );
+	  return;
   }
-
-  $self->render( json => { application => $application_ref, } );
-
+  
+  # Validation failed
+  $self->render( json => { message => 'Piss off!', } );
   return;
 }
 
