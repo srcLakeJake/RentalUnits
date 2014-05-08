@@ -17,11 +17,11 @@ sub startup {
     action     => 'get_all_users',
   );
 
-  $self->routes()->get('/application/:id')->to(
-    controller => 'Application',
-    action     => 'get_application',
-    validation_class => 'RentalUnits::Validation::Application',
-  );
+  # $self->routes()->get('/application/:app_id')->to(
+    # controller => 'Application',
+    # action     => 'get_application',
+    # validation_class => 'RentalUnits::Validation::Application',
+  # );
 
   $self->routes()->post('/application')->to(
     controller => 'Application',
@@ -54,6 +54,28 @@ sub startup {
       controller => 'Stuff',
 	  action      => 'show_stuff',
   );  
+  
+  my $auth2 = $self->routes()->bridge('/auth2')->to(cb => sub {
+      my $self = shift;
+	  
+	  if ( ! $self->is_user_authenticated() ) {
+	      $self->render( json => { message => 'You\'d better log in if you want to view this page' } );
+		  return;
+	  }
+	  
+	  return 1;
+  });
+  
+  $auth2->route('/secured_stuff')->to(
+      controller => 'Stuff',
+	  action      => 'show_stuff',
+  ); 
+  
+  $auth2->get('/application/:app_id')->to(
+    controller => 'Application',
+    action     => 'get_application',
+    validation_class => 'RentalUnits::Validation::Application',
+  );
 
   return;
 }

@@ -11,10 +11,10 @@ use RentalUnits::DB::Application;
 sub get_application {
   my $self = shift;
 
-  if ( ! $self->is_user_authenticated() ) {            
-      $self->render( json => { message => 'You must log in to view this page.', } );
-	  return;
-  }
+  # if ( ! $self->is_user_authenticated() ) {            
+      # $self->render( json => { message => 'You must log in to view this page.', } );
+	  # return;
+  # }
 
   my $validation = $self->validation();
   # 'id' seems to be a reserved word... supplying parameter in 'id' field did not work!
